@@ -61,7 +61,12 @@ const modal=h=>{const m=document.createElement('div');m.className='mo';m.innerHT
 /* ===== PUBLIK ===== */
 const ph=(u,c='')=>SU(u)?`<img src="${SU(u)}" alt="" loading="lazy" class="${c}">`:`<div class="ph ${c}"></div>`;
 const sec=(id,t,sb,b,c='')=>`<section id="${id}" class="${c}"><div class="w"><h2>${E(t)}</h2><p class="sub">${E(sb)}</p>${b}</div></section>`;
-async function load(){try{const r=await fetch(API+'?action=getPublic'),j=await r.json();if(!j.ok)throw Error(j.error);D=j.data;render()}catch(x){$('#site').innerHTML='<div class="load">Gagal memuat data: '+E(x.message)+'</div>'}}
+const DEF={nama_sekolah:'Nama Sekolah',tagline:'',warna_utama:'#0f3d6e',warna_aksen:'#c9a24b',warna_latar:'#f8fafc',font_judul:'Playfair Display',font_isi:'Inter',hero_judul:'Selamat Datang',hero_subjudul:'',tentang_judul:'Tentang Sekolah',tentang_isi:'',visi:'',misi:'',sambutan_isi:'',alamat:'',jam_operasional:'',maps_embed:'',footer_teks:'',logo:'',telepon:'',email:''};
+async function load(){try{const c=new AbortController,t=setTimeout(()=>c.abort(),30000);let r;try{r=await fetch(API+'?action=getPublic',{signal:c.signal})}finally{clearTimeout(t)}
+const tx=await r.text();let j;try{j=JSON.parse(tx)}catch(e){throw Error('Server tidak mengembalikan data JSON. Pastikan Web App di-deploy dengan akses "Anyone" dan memakai versi terbaru.')}
+if(!j.ok)throw Error(j.error);D=j.data;D.pengaturan={...DEF,...(D.pengaturan||{})};['menu','slider','program','fasilitas','guru','berita','galeri','prestasi','agenda','halaman'].forEach(k=>D[k]=D[k]||[]);render()}
+catch(x){const m=/Failed to fetch|abort/i.test(x.message)?'Tidak bisa terhubung ke server. Buka halaman ini dari hosting (mis. GitHub Pages) atau file langsung di browser, bukan dari pratinjau/preview.':x.message;
+$('#site').innerHTML=`<div class="load"><p>Gagal memuat data:<br><b>${E(m)}</b></p><p style="margin:16px"><button class="btn" onclick="location.reload()">Coba Lagi</button></p><p><small>Jika masih gagal: jalankan <b>setup()</b> di Apps Script, lalu Deploy › Manage deployments › Edit › New version (akses: Anyone).</small></p><p style="margin-top:12px"><a href="#admin">Buka Admin</a></p></div>`}}
 function render(){
 const s=D.pengaturan,on=k=>s['show_'+k]!=='N',st=document.documentElement.style;
 st.setProperty('--p',s.warna_utama);st.setProperty('--a',s.warna_aksen);st.setProperty('--bg',s.warna_latar);
