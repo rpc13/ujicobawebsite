@@ -41,6 +41,25 @@ input,textarea,select{width:100%;padding:10px 12px;border:1px solid #cbd5e1;bord
 .mb{background:var(--c);color:var(--t);border-radius:var(--r);padding:26px;max-width:680px;width:100%;max-height:92vh;overflow:auto}
 #toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,80px);background:#0f172a;color:#fff;padding:12px 22px;border-radius:99px;opacity:0;transition:.3s;z-index:200}#toast.on{opacity:1;transform:translate(-50%,0)}#toast.er{background:#b91c1c}
 .nh .hero{display:none}.nh .hero+*{margin-top:72px}.nh #nav{background:var(--c);color:var(--h);box-shadow:0 2px 20px #0001}a.card{display:block;color:inherit;text-decoration:none}.lnk{display:inline-block;margin-top:10px;color:var(--a);font-weight:600}
+.lay-modern #nav{inset:14px 0 auto}.lay-modern #nav .w{background:#ffffff1f;backdrop-filter:blur(14px);border-radius:99px;height:60px;padding:0 26px;max-width:1080px;border:1px solid #ffffff33}
+.lay-modern #nav.s{background:none;box-shadow:none;backdrop-filter:none}.lay-modern #nav.s .w{background:var(--c);box-shadow:0 8px 30px #0002}
+.lay-modern .hero{height:92vh;border-radius:0 0 calc(var(--r)*2.5) calc(var(--r)*2.5)}.lay-modern .sl{text-align:center}.lay-modern .sl h1,.lay-modern .sl p{margin-left:auto;margin-right:auto}
+.lay-modern .card{box-shadow:none;border:1px solid #64748b30}
+.lay-minimal .hero{height:68vh;min-height:440px}.lay-minimal .sl{align-items:flex-end;padding-bottom:64px}.lay-minimal .sl:before{background:linear-gradient(0deg,#000a,#0002)}
+.lay-minimal section h2,.lay-minimal .sub{text-align:left}.lay-minimal .sub{margin-left:0}.lay-minimal section h2:after{margin-left:0;width:36px;height:2px}
+.lay-minimal .card{box-shadow:none;border-radius:0;background:none;border-bottom:1px solid #64748b40}.lay-minimal .card:hover{transform:none;box-shadow:none}
+.lay-minimal .card img,.lay-minimal .ph{border-radius:0;height:180px}.lay-minimal .st{background:none;color:var(--t);border-block:1px solid #64748b40}.lay-minimal .btn{border-radius:0}
+.lay-majalah h1,.lay-majalah h2,.lay-majalah h3{text-transform:uppercase;letter-spacing:.04em}.lay-majalah .hero{height:78vh}.lay-majalah .sl{align-items:flex-end;padding-bottom:70px}
+.lay-majalah .sl h1{max-width:900px;font-size:clamp(2.4rem,6vw,4.6rem)}.lay-majalah section h2{text-align:left;border-bottom:3px solid var(--h);padding-bottom:10px}
+.lay-majalah section h2:after{display:none}.lay-majalah .sub{text-align:left;margin-left:0}.lay-majalah .card{border-radius:0;box-shadow:none;border:1px solid #64748b30}.lay-majalah .btn{border-radius:0}
+.lay-kreatif .card{border:2px solid var(--h);box-shadow:6px 6px 0 var(--a)}.lay-kreatif .card:hover{transform:translate(-3px,-3px);box-shadow:9px 9px 0 var(--a)}
+.lay-kreatif .btn{border:2px solid var(--h);box-shadow:4px 4px 0 var(--h)}.lay-kreatif section h2{display:table;margin:0 auto;background:var(--a);color:#fff;padding:6px 20px;transform:rotate(-1.5deg)}
+.lay-kreatif section h2:after{display:none}.lay-kreatif .st{background:linear-gradient(135deg,var(--p),var(--a))}.lay-kreatif .st b{color:#fff}
+.lay-kreatif .sl h1{font-size:clamp(2.6rem,6.5vw,5rem)}.lay-kreatif .ag{border:2px solid var(--h);box-shadow:5px 5px 0 var(--a)}
+@media(min-width:801px){.lay-majalah #berita .grid{grid-template-columns:repeat(4,1fr)}.lay-majalah #berita .card:first-child{grid-column:span 2;grid-row:span 2}.lay-majalah #berita .card:first-child img,.lay-majalah #berita .card:first-child .ph{height:340px}
+.lay-sidebar>:not(#nav){margin-left:250px}.lay-sidebar #nav,.lay-sidebar #nav.s{inset:0 auto 0 0;width:250px;background:var(--p);color:#fff;box-shadow:none}
+.lay-sidebar #nav .w{flex-direction:column;align-items:flex-start;justify-content:flex-start;height:100%;padding:30px 22px;gap:26px}.lay-sidebar #nav nav{flex-direction:column;gap:8px}
+.lay-sidebar #nav nav a{font-size:.95rem;padding:6px 0}.lay-sidebar.nh .hero+*{margin-top:0}}
 @media(max-width:800px){#nav nav{display:none;position:absolute;top:72px;left:0;right:0;background:var(--c);flex-direction:column;padding:16px 20px}#nav nav.o{display:flex}#nav nav a{color:var(--h)}#mb{display:block}.two{grid-template-columns:1fr}section{padding:60px 0}}
 </style></head><body>
 <div id="site"><div class="load">Memuat…</div></div><div id="toast"></div>
@@ -57,7 +76,7 @@ const modal=h=>{const m=document.createElement('div');m.className='mo';m.innerHT
 const ph=(u,c='')=>SU(u)?`<img src="${SU(u)}" alt="" loading="lazy" class="${c}">`:`<div class="ph ${c}"></div>`;
 const sec=(id,t,sb,b,c='')=>`<section id="${id}" class="${c}"><div class="w"><h2>${E(t)}</h2><p class="sub">${E(sb)}</p>${b}</div></section>`;
 const MP=v=>{v=String(v||'');const m=v.match(/src\s*=\s*["']([^"']+)["']/i),u=(m?m[1]:v).trim().replace(/&amp;/g,'&');return /^https:\/\/(www\.)?google\.[a-z.]+\/maps\/embed/i.test(u)||/^https:\/\/maps\.google\.[a-z.]+\/maps\?.*output=embed/i.test(u)?u:''};
-const DEF={nama_sekolah:'Nama Sekolah',gaya_sudut:'sedang',judul_program:'Program dan Inovasi',judul_aplikasi:'Aplikasi Sekolah',tagline:'',warna_utama:'#0f3d6e',warna_aksen:'#c9a24b',warna_latar:'#f8fafc',font_judul:'Playfair Display',font_isi:'Inter',hero_judul:'Selamat Datang',hero_subjudul:'',tentang_judul:'Tentang Sekolah',tentang_isi:'',visi:'',misi:'',sambutan_isi:'',alamat:'',jam_operasional:'',maps_embed:'',footer_teks:'',logo:'',telepon:'',email:''};
+const DEF={nama_sekolah:'Nama Sekolah',gaya_sudut:'sedang',tema_layout:'klasik',judul_program:'Program dan Inovasi',judul_aplikasi:'Aplikasi Sekolah',tagline:'',warna_utama:'#0f3d6e',warna_aksen:'#c9a24b',warna_latar:'#f8fafc',font_judul:'Playfair Display',font_isi:'Inter',hero_judul:'Selamat Datang',hero_subjudul:'',tentang_judul:'Tentang Sekolah',tentang_isi:'',visi:'',misi:'',sambutan_isi:'',alamat:'',jam_operasional:'',maps_embed:'',footer_teks:'',logo:'',telepon:'',email:''};
 async function load(){try{const c=new AbortController,t=setTimeout(()=>c.abort(),30000);let r;try{r=await fetch(API+'?action=getPublic',{signal:c.signal})}finally{clearTimeout(t)}
 const tx=await r.text();let j;try{j=JSON.parse(tx)}catch(e){throw Error('Server tidak mengembalikan data JSON. Pastikan Web App di-deploy dengan akses "Anyone" dan memakai versi terbaru.')}
 if(!j.ok)throw Error(j.error);D=j.data;D.pengaturan={...DEF,...(D.pengaturan||{})};['menu','slider','program','fasilitas','guru','berita','galeri','prestasi','agenda','halaman','aplikasi'].forEach(k=>D[k]=D[k]||[]);render()}
@@ -89,7 +108,7 @@ if(on('agenda')&&D.agenda.length)h+=sec('agenda','Agenda','Kegiatan yang akan da
 if(on('galeri')&&D.galeri.length)h+=sec('galeri','Galeri','Momen kebersamaan',`<div class="gal">${D.galeri.map(g=>`<img src="${SU(g.gambar)}" alt="${E(g.judul)}" loading="lazy" onclick="zoom(this.src)">`).join('')}</div>`);
 if(on('kontak'))h+=sec('kontak','Hubungi Kami','Kami siap membantu Anda',`<div class="two"><div><p>📍 ${N(s.alamat)}</p>${s.telepon?`<p>📞 ${E(s.telepon)}</p>`:''}${s.email?`<p>✉️ ${E(s.email)}</p>`:''}<p>🕒 ${E(s.jam_operasional)}</p>${MP(s.maps_embed)?`<iframe src="${E(MP(s.maps_embed))}" style="width:100%;height:260px;border:0;border-radius:14px;margin-top:16px" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade"></iframe>`:''}</div><form class="box ct" onsubmit="send(this);return false"><input name="nama" placeholder="Nama" required><input name="email" type="email" placeholder="Email"><input name="telepon" placeholder="Telepon"><textarea name="pesan" rows="4" placeholder="Pesan" required></textarea><input name="website" style="display:none" tabindex="-1" autocomplete="off"><button class="btn">Kirim Pesan</button></form></div>`,'tint');
 h+=`<footer><p style="margin-bottom:10px">${[['facebook','Facebook'],['instagram','Instagram'],['youtube','YouTube'],['tiktok','TikTok']].filter(x=>SU(s[x[0]])).map(x=>`<a href="${SU(s[x[0]])}" target="_blank" rel="noopener">${x[1]}</a>`).join('')}</p><p>${E(s.footer_teks)}</p></footer>`;
-$('#site').innerHTML=h;$('#site').className=on('hero')?'':'nh';
+$('#site').innerHTML=h;$('#site').className=(on('hero')?'':'nh ')+'lay-'+(s.tema_layout||'klasik');
 window.onscroll=()=>$('#nav')&&$('#nav').classList.toggle('s',scrollY>40);onscroll();
 clearInterval(window.si);if(sl.length>1)window.si=setInterval(()=>{const a=[...document.querySelectorAll('.sl')],i=a.findIndex(x=>x.classList.contains('on'));a[i].classList.remove('on');a[(i+1)%a.length].classList.add('on')},6000)}
 const news=id=>{const b=D.berita.find(x=>x.id==id);modal(`${ph(b.gambar)}<h2 style="margin:14px 0">${E(b.judul)}</h2><small>${E(b.tanggal)} · ${E(b.penulis)}</small><p style="margin-top:12px">${N(b.isi)}</p>`)};
