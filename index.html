@@ -60,6 +60,8 @@ input,textarea,select{width:100%;padding:10px 12px;border:1px solid #cbd5e1;bord
 .lay-sidebar>:not(#nav){margin-left:250px}.lay-sidebar #nav,.lay-sidebar #nav.s{inset:0 auto 0 0;width:250px;background:var(--p);color:#fff;box-shadow:none}
 .lay-sidebar #nav .w{flex-direction:column;align-items:flex-start;justify-content:flex-start;height:100%;padding:30px 22px;gap:26px}.lay-sidebar #nav nav{flex-direction:column;gap:8px}
 .lay-sidebar #nav nav a{font-size:.95rem;padding:6px 0}.lay-sidebar.nh .hero+*{margin-top:0}}
+.ft{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:28px}.ft button{border:1px solid #64748b50;background:var(--c);color:var(--t);padding:8px 18px;border-radius:99px;cursor:pointer;font:600 .85rem var(--fb)}.ft button.on{background:var(--p);color:#fff;border-color:var(--p)}
+.src{display:flex;align-items:center}.card .fav{width:16px!important;height:16px!important;border-radius:3px!important;margin-right:6px;flex:none}
 @media(max-width:800px){#nav nav{display:none;position:absolute;top:72px;left:0;right:0;background:var(--c);flex-direction:column;padding:16px 20px}#nav nav.o{display:flex}#nav nav a{color:var(--h)}#mb{display:block}.two{grid-template-columns:1fr}section{padding:60px 0}}
 </style></head><body>
 <div id="site"><div class="load">Memuat…</div></div><div id="toast"></div>
@@ -102,7 +104,10 @@ h+=S('program','program',s.judul_program,'Karya dan terobosan sekolah',p=>CD(p.l
 h+=S('aplikasi','aplikasi',s.judul_aplikasi,'Layanan digital untuk warga sekolah',a=>CD(a.link,`${SU(a.gambar)?ph(a.gambar):`<div class="ic">${E(a.ikon||'📱')}</div>`}<div><h3>${E(a.nama)}</h3><p>${E(a.deskripsi)}</p>${a.link?'<span class="lnk">Buka aplikasi →</span>':''}</div>`));
 h+=S('fasilitas','fasilitas','Fasilitas','Sarana penunjang belajar',f=>`<div class="card">${ph(f.gambar)}<div><h3>${E(f.nama)}</h3><p>${E(f.deskripsi)}</p></div></div>`);
 h+=S('guru','guru','Guru & Tenaga Pendidik','Pendidik profesional dan berdedikasi',g=>`<div class="card">${ph(g.foto)}<div><h3>${E(g.nama)}</h3><small>${E(g.jabatan)}${g.mapel?' · '+E(g.mapel):''}</small></div></div>`);
-h+=S('berita','berita','Berita Terbaru','Kabar dan informasi dari sekolah',b=>`<div class="card" style="cursor:pointer" onclick="news('${E(b.id)}')">${ph(b.gambar)}<div><small>${E(b.tanggal)} · ${E(b.kategori)}</small><h3>${E(b.judul)}</h3><p>${E(b.ringkasan)}</p></div></div>`);
+const BN=b=>{if(b.tipe!='online')return`<div class="card" data-t="m" style="cursor:pointer" onclick="news('${E(b.id)}')">${ph(b.gambar)}<div><small>${E(b.tanggal)} · ${E(b.kategori)}</small><h3>${E(b.judul)}</h3><p>${E(b.ringkasan)}</p></div></div>`;
+let fh='';try{fh=new URL(b.link).hostname}catch(e){}
+return`<a class="card" data-t="o" href="${L(b.link)}" target="_blank" rel="noopener">${ph(b.gambar)}<div><small class="src"><img class="fav" src="https://www.google.com/s2/favicons?domain=${E(fh)}&sz=64" alt="">${E(b.sumber||fh)}${b.tanggal?' · '+E(b.tanggal):''}</small><h3>${E(b.judul)}</h3><p>${E(b.ringkasan)}</p><span class="lnk">Baca di ${E(b.sumber||'situs asli')} ↗</span></div></a>`};
+if(on('berita')&&D.berita.length){const hs=D.berita.some(b=>b.tipe=='online')&&D.berita.some(b=>b.tipe!='online');h+=sec('berita','Berita Terbaru','Kabar dan informasi tentang sekolah',(hs?`<div class="ft">${[['','Semua'],['m','Berita Sekolah'],['o','Di Media Online']].map((x,i)=>`<button class="${i?'':'on'}" onclick="fb(this,'${x[0]}')">${x[1]}</button>`).join('')}</div>`:'')+`<div class="grid" id="bg">${D.berita.map(BN).join('')}</div>`)}
 h+=S('prestasi','prestasi','Prestasi','Kebanggaan sekolah kami',x=>`<div class="card">${ph(x.gambar)}<div><small>${E(x.tahun)}</small><h3>${E(x.judul)}</h3><p>${E(x.deskripsi)}</p></div></div>`);
 if(on('agenda')&&D.agenda.length)h+=sec('agenda','Agenda','Kegiatan yang akan datang',D.agenda.map(a=>`<div class="ag"><b>${E(a.tanggal)}</b><div><h3>${E(a.judul)}</h3><small>${E(a.lokasi)}</small><p>${E(a.deskripsi)}</p></div></div>`).join(''),'tint');
 if(on('galeri')&&D.galeri.length)h+=sec('galeri','Galeri','Momen kebersamaan',`<div class="gal">${D.galeri.map(g=>`<img src="${SU(g.gambar)}" alt="${E(g.judul)}" loading="lazy" onclick="zoom(this.src)">`).join('')}</div>`);
@@ -111,6 +116,7 @@ h+=`<footer><p style="margin-bottom:10px">${[['facebook','Facebook'],['instagram
 $('#site').innerHTML=h;$('#site').className=(on('hero')?'':'nh ')+'lay-'+(s.tema_layout||'klasik');
 window.onscroll=()=>$('#nav')&&$('#nav').classList.toggle('s',scrollY>40);onscroll();
 clearInterval(window.si);if(sl.length>1)window.si=setInterval(()=>{const a=[...document.querySelectorAll('.sl')],i=a.findIndex(x=>x.classList.contains('on'));a[i].classList.remove('on');a[(i+1)%a.length].classList.add('on')},6000)}
+const fb=(b,t)=>{b.parentNode.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x==b));document.querySelectorAll('#bg>.card').forEach(c=>c.style.display=!t||c.dataset.t==t?'':'none')};
 const news=id=>{const b=D.berita.find(x=>x.id==id);modal(`${ph(b.gambar)}<h2 style="margin:14px 0">${E(b.judul)}</h2><small>${E(b.tanggal)} · ${E(b.penulis)}</small><p style="margin-top:12px">${N(b.isi)}</p>`)};
 const zoom=s=>modal(`<img src="${E(s)}" style="width:100%">`);
 const send=go(async f=>{await api('kirimPesan',Object.fromEntries(new FormData(f)));f.reset();toast('Pesan terkirim, terima kasih!')});
