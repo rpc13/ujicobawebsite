@@ -26,7 +26,17 @@ const drag=(h,fn)=>h.addEventListener('pointerdown',e=>{if(!sel)return;e.prevent
 const mm=v=>{fn(o,v.clientX-x0,v.clientY-y0,s0);sty(sel,o);sd=true;upd()},end=()=>{removeEventListener('pointermove',mm);removeEventListener('pointerup',end)};addEventListener('pointermove',mm);addEventListener('pointerup',end)});
 drag(mv,(o,dx,dy,s)=>{o.x=Math.round(s.x+dx);o.y=Math.round(s.y+dy)});
 drag(rz,(o,dx,dy,s)=>{o.w=Math.max(30,Math.round(s.w+dx));if(sel.dataset.img)o.h=Math.max(30,Math.round(s.h+dy))});
-const up=f=>new Promise((ok,no)=>{const r=new FileReader;r.onload=()=>{const im=new Image;im.onload=()=>{const q=Math.min(1,1400/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=im.width*q;c.height=im.height*q;c.getContext('2d').drawImage(im,0,0,c.width,c.height);const png=f.type=='image/png'&&c.toDataURL('image/png').length<1.2e6,d=c.toDataURL(png?'image/png':'image/jpeg',.82);api('upload',{filename:f.name.replace(/\.\w+$/,'')+(png?'.png':'.jpg'),mimeType:png?'image/png':'image/jpeg',data:d.split(',')[1]}).then(x=>ok(x.url),no)};im.onerror=()=>no(Error('File bukan gambar'));im.src=r.result};r.readAsDataURL(f)});
+const up=f=>new Promise((ok,no)=>{if(!/^image\//.test(f.type)&&!/\.(jpe?g|png|webp|gif)$/i.test(f.name))return no(Error('Pilih file gambar (JPG, PNG, WEBP, atau GIF)'));
+const r=new FileReader;r.onerror=()=>no(Error('Gagal membaca file'));
+r.onload=()=>{const im=new Image,send=(mt,d,ext)=>api('upload',{filename:f.name.replace(/\.\w+$/,'')+ext,mimeType:mt,data:d.split(',')[1]}).then(x=>ok(x.url),no);
+im.onerror=()=>no(Error('File bukan gambar yang valid (pakai JPG/PNG/WEBP)'));
+im.onload=()=>{const M=Math.max(im.width,im.height),ty=f.type;
+if(f.size<1.5e6&&/^image\/(png|jpe?g|webp|gif)$/.test(ty)&&M<=2400)return send(ty,r.result,'.'+(ty.split('/')[1]=='jpeg'?'jpg':ty.split('/')[1]));
+let q=Math.min(1,1400/M);const c=document.createElement('canvas'),x=c.getContext('2d'),draw=()=>{c.width=Math.round(im.width*q);c.height=Math.round(im.height*q);x.clearRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height)};draw();
+const px=x.getImageData(0,0,c.width,c.height).data;let al=false;for(let i=3;i<px.length;i+=16)if(px[i]<250){al=true;break}
+if(al){let d=c.toDataURL('image/png');while(d.length>2.8e6&&q>.2){q*=.8;draw();d=c.toDataURL('image/png')}return send('image/png',d,'.png')}
+const png=ty=='image/png'&&c.toDataURL('image/png').length<1.2e6;send(png?'image/png':'image/jpeg',c.toDataURL(png?'image/png':'image/jpeg',.82),png?'.png':'.jpg')};
+im.src=r.result};r.readAsDataURL(f)});
 const setImg=async f=>{if(!sel||!sel.dataset.img||!f)return;toast('Mengunggah gambar…');try{const u=await up(f);sel.src=u;vals[sel.dataset.e]=u;dirty.add(sel.dataset.e);upd();toast('Gambar diganti. Jangan lupa Simpan.')}catch(x){toast(x.message,1)}};
 const chooseImg=async()=>{try{if(window.showOpenFilePicker){const[h]=await showOpenFilePicker({types:[{description:'Gambar',accept:{'image/*':['.jpg','.jpeg','.png','.webp','.gif']}}]});return setImg(await h.getFile())}}catch(e){if(e.name=='AbortError')return}
 const i=document.createElement('input');i.type='file';i.style.cssText='position:fixed;left:-9999px';i.onchange=()=>{setImg(i.files[0]);i.remove()};document.body.appendChild(i);i.click()};
